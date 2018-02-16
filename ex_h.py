@@ -5,44 +5,60 @@ import matplotlib.pyplot as plt
 sys.path.append(os.path.abspath("/home/matt/Documents/3f8"))
 from inference_functions import *
 
-## Parameters
-eta = 0.0005                # Learning rate
-steps = 100                 # Training steps
-w = np.ones(3)              # Weights
-ll_train = np.zeros(800)
-ll_test = np.zeros(200)
+# Check Arguments
+if len(sys.argv) != 2:
+    print("Usage: {} l".format(sys.argv[0]))
+    sys.exit(1)
+
+# Read hyper parameter
+l = float(sys.argv[1])
+
+# Parameters
+if(l==0.01):
+    eta = 0.014          # Learning rate
+if (l==1):
+    eta = 0.001
+else:
+    eta = 0.01
+steps = 1000             # Training steps
+w = np.ones(801)         # Weights
+ll = np.zeros(steps)     # Average LL Evolution
 num_test = 200
 num_train = 800
 
 # Load training data
 X_train = np.loadtxt('X_train.txt')
 y_train = np.loadtxt('y_train.txt')
+
+#Load test data
 X_test = np.loadtxt('X_test.txt')
 y_test = np.loadtxt('y_test.txt')
 
-# Append 1's to X's
-X_train = np.insert(X_train,2,1,1)
-X_test = np.insert(X_test,2,1,1)
+# Expand using RBFs
+X_train_expanded = expand_inputs(l, X_train, X_train)
+X_train_expanded = np.insert(X_train_expanded,800,1,1)
+X_test_expanded = expand_inputs(l, X_test, X_train)
+X_test_expanded = np.insert(X_test_expanded,800,1,1)
 
 # Train Weights
 for i in range (0, steps):
     
     # Compute dL(w)/dw
-    dw = np.dot(np.transpose(X_train),y_train-logistic(np.dot(X_train,w)))
+    dw = np.dot(np.transpose(X_train_expanded),y_train-logistic(np.dot(X_train_expanded,w)))
     
     # Perform Gradient Ascent
     w = w + eta*dw
     
-# Dataset LLs
-ll_train = compute_data_ll(X_train, y_train,w)
-ll_test = compute_data_ll(X_test, y_test,w)
+    # Update LL Evolution
+    ll[i] = compute_average_ll(X_train_expanded,y_train,w)
+    
+# Plot LL evolution
+print("FINAL AVG TRAIN LL =", ll[steps-1])
+print("FINAL AVG TEST LL =", compute_average_ll(X_test_expanded, y_test, w))
 
-#print("Training LL's:", ll_train)
-#print("Testing LL's:", ll_test)
-
-# Reload X datasets
-X_train = np.loadtxt('X_train.txt')
-X_test = np.loadtxt('X_test.txt')
+# Plot Classification Regions
+plot_expanded_predictive_distribution(X_train,X_train,y_train,w,l)
+plot_expanded_predictive_distribution(X_test,X_train,y_test,w,l)
 
 # Calculate probabilities
 train_predictions = predict_for_plot(X_train, w)

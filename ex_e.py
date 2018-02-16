@@ -19,7 +19,7 @@ y = np.loadtxt('y_train.txt')
 X = np.insert(X,2,1,1)
 
 # Train Weights
-for i in range (1, steps):
+for i in range (0, steps):
     
     # Compute dL(w)/dw
     dw = np.dot(np.transpose(X),y-logistic(np.dot(X,w)))
@@ -35,7 +35,7 @@ print("Final Weights:", w)
     
 # Plot LL evolution
 plot_ll(ll)
-print("AVG TRAIN LL =", ll[steps-1])
+print("FINAL AVG TRAIN LL =", ll[steps-1])
 
 # Plot Classification Regions
 X = np.loadtxt('X_train.txt')
@@ -45,5 +45,5 @@ plot_predictive_distribution(X,y,w)
 X_test = np.loadtxt('X_test.txt')
 y_test = np.loadtxt('y_test.txt')
 X_test_3 = np.insert(X_test,2,1,1)
-print("AVG TEST LL =", compute_average_ll(X_test_3,y_test,w))
+print("FINAL AVG TEST LL =", compute_average_ll(X_test_3,y_test,w))
 plot_predictive_distribution(X_test,y_test,w)

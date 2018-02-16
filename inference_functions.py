@@ -40,7 +40,8 @@ def plot_data(X, y):
 # x: input to the logistic function
 #
 def logistic(x):
-    return 1.0 / (1.0 + np.exp(-x))
+   return 1.0 / (1.0 + np.exp(-x))
+    
 
 ##
 # X: 2d array with the input features
@@ -48,13 +49,19 @@ def logistic(x):
 # w: current parameter values
 #
 def compute_average_ll(X, y, w):
+    
     output_prob = logistic(np.dot(X, w))
-    return np.mean(y * np.log(output_prob)
-                   + (1 - y) * np.log(1.0 - output_prob))
+    tmp = np.mean(y * np.log(output_prob)
+                      + (1 - y) * np.log(1.0 - output_prob))
+    if(np.nan_to_num(tmp)==0):
+        return np.mean(y * np.dot(X, w)
+                      - (1 - y) * np.dot(X, w))
+    else:
+        return tmp
 
-def compute_data_ll(X,y,w):
-    return (y * np.log(logistic(np.dot(X, w))) 
-           + (1 - y) * np.log(1.0 - logistic(np.dot(X, w))))
+#def compute_data_ll(X,y,w):
+#    return (y * np.log(logistic(np.dot(X, w))) 
+#           + (1 - y) * np.log(1.0 - logistic(np.dot(X, w))))
     
 ##
 # ll: 1d array with the average likelihood per data point, for each training
@@ -97,6 +104,18 @@ def plot_predictive_distribution(X, y, w):
     cs2 = ax.contour(xx, yy, Z, cmap = 'RdBu', linewidths = 2)
     plt.clabel(cs2, fmt = '%2.1f', colors = 'k', fontsize = 14)
     plt.show()
+    
+    
+def plot_expanded_predictive_distribution(X, X2,y, w,l):
+    xx, yy = plot_data_internal(X, y)
+    ax = plt.gca()
+    X_predict = np.concatenate((xx.ravel().reshape((-1, 1)),
+                                yy.ravel().reshape((-1, 1))), 1)
+    Z = predict_for_plot_expanded_features(X_predict,X2,w,l)
+    Z = Z.reshape(xx.shape)
+    cs2 = ax.contour(xx, yy, Z, cmap = 'RdBu', linewidths = 2)
+    plt.clabel(cs2, fmt = '%2.1f', colors = 'k', fontsize = 14)
+    plt.show()
 
 ##
 # l: hyper-parameter for the width of the Gaussian basis functions
@@ -120,7 +139,7 @@ def expand_inputs(l, X, Z):
 # scope)
 #
 
-def predict_for_plot_expanded_features(x):
-    x_expanded = expand_inputs(l, x, X)
+def predict_for_plot_expanded_features(x, X2, w,l):
+    x_expanded = expand_inputs(l, x, X2)
     x_tilde = np.concatenate((x_expanded, np.ones((x_expanded.shape[ 0 ], 1 ))), 1)
     return logistic(np.dot(x_tilde, w))
