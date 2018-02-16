@@ -15,7 +15,7 @@ l = float(sys.argv[1])
 
 # Parameters
 if(l==0.01):
-    eta = 0.014          # Learning rate
+    eta = 0.018          # Learning rate
 if (l==1):
     eta = 0.001
 else:
@@ -49,28 +49,19 @@ for i in range (0, steps):
     # Perform Gradient Ascent
     w = w + eta*dw
     
-    # Update LL Evolution
-    ll[i] = compute_average_ll(X_train_expanded,y_train,w)
-    
 # Plot LL evolution
-print("FINAL AVG TRAIN LL =", ll[steps-1])
+print("FINAL AVG TRAIN LL =",  compute_average_ll(X_train_expanded, y_train, w))
 print("FINAL AVG TEST LL =", compute_average_ll(X_test_expanded, y_test, w))
 
-# Plot Classification Regions
-plot_expanded_predictive_distribution(X_train,X_train,y_train,w,l)
-plot_expanded_predictive_distribution(X_test,X_train,y_test,w,l)
 
 # Calculate probabilities
 train_predictions = predict_for_plot(expand_inputs(l, X_train, X_train), w)
 test_predictions = predict_for_plot(expand_inputs(l, X_test, X_train), w)
 
-#print("Training Predictions:", train_predictions)
-#print("Testing Predictions:", test_predictions)
-
-true_positives = 0
-true_negatives = 0
-false_positives = 0
-false_negatives = 0
+true_positives = 0.0
+true_negatives = 0.0
+false_positives = 0.0
+false_negatives = 0.0
 train_confusion = np.zeros((2,2))
 test_confusion = np.zeros((2,2))
 
@@ -81,30 +72,29 @@ for k in range (0, 800):
         
         # Classified Y = 1
         if(y_train[k] == 1.0):
-            true_positives = true_positives+1
+            true_positives = true_positives+1.0
         else:
-            false_positives = false_positives+1
+            false_positives = false_positives+1.0
     else:
   
         # Classified Y = 0        
         if(y_train[k] == 0.0):
-            true_negatives = true_negatives+1
+            true_negatives = true_negatives+1.0
         else:
-            false_negatives = false_negatives+1     
+            false_negatives = false_negatives+1.0  
 
-train_confusion[0][0] = true_negatives
-train_confusion[0][1] = false_negatives
-train_confusion[1][0] = false_positives
-train_confusion[1][1] = true_positives
-train_confusion = train_confusion/num_train
+train_confusion[0][0] = true_negatives/(true_negatives+false_negatives)
+train_confusion[0][1] = false_negatives/(true_negatives+false_negatives)
+train_confusion[1][0] = false_positives/(true_positives+false_positives)
+train_confusion[1][1] = true_positives/(true_positives+false_positives)
 print("Training Data Confusion Matrix:")
 print(train_confusion)
 
 
-true_positives = 0
-true_negatives = 0
-false_positives = 0
-false_negatives = 0
+true_positives = 0.0
+true_negatives = 0.0
+false_positives = 0.0
+false_negatives = 0.0
 
 # Test Data Error Analysis
 for m in range (0, 200):
@@ -113,21 +103,20 @@ for m in range (0, 200):
         
         # Classified Y = 1
         if(y_test[m] == 1.0):
-            true_positives = true_positives+1
+            true_positives = true_positives+1.0
         else:
-            false_positives = false_positives+1
+            false_positives = false_positives+1.0
     else:
   
         # Classified Y = 0        
         if(y_test[m] == 0.0):
-            true_negatives = true_negatives+1
+            true_negatives = true_negatives+1.0
         else:
-            false_negatives = false_negatives+1     
+            false_negatives = false_negatives+1.0  
 
-test_confusion[0][0] = true_negatives
-test_confusion[0][1] = false_negatives
-test_confusion[1][0] = false_positives
-test_confusion[1][1] = true_positives
-test_confusion = test_confusion/num_test
+test_confusion[0][0] = true_negatives/(true_negatives+false_negatives)
+test_confusion[0][1] = false_negatives/(true_negatives+false_negatives)
+test_confusion[1][0] = false_positives/(true_positives+false_positives)
+test_confusion[1][1] = true_positives/(true_positives+false_positives)
 print("Testing Data Confusion Matrix:")
 print(test_confusion)

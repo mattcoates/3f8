@@ -32,13 +32,6 @@ for i in range (0, steps):
     
     # Perform Gradient Ascent
     w = w + eta*dw
-    
-# Dataset LLs
-ll_train = compute_data_ll(X_train, y_train,w)
-ll_test = compute_data_ll(X_test, y_test,w)
-
-#print("Training LL's:", ll_train)
-#print("Testing LL's:", ll_test)
 
 # Reload X datasets
 X_train = np.loadtxt('X_train.txt')
@@ -47,9 +40,6 @@ X_test = np.loadtxt('X_test.txt')
 # Calculate probabilities
 train_predictions = predict_for_plot(X_train, w)
 test_predictions = predict_for_plot(X_test, w)
-
-#print("Training Predictions:", train_predictions)
-#print("Testing Predictions:", test_predictions)
 
 true_positives = 0
 true_negatives = 0
@@ -76,11 +66,10 @@ for k in range (0, 800):
         else:
             false_negatives = false_negatives+1     
 
-train_confusion[0][0] = true_negatives
-train_confusion[0][1] = false_negatives
-train_confusion[1][0] = false_positives
-train_confusion[1][1] = true_positives
-train_confusion = train_confusion/num_train
+train_confusion[0][0] = true_negatives/(true_negatives+false_negatives)
+train_confusion[0][1] = false_negatives/(true_negatives+false_negatives)
+train_confusion[1][0] = false_positives/(true_positives+false_positives)
+train_confusion[1][1] = true_positives/(true_positives+false_positives)
 print("Training Data Confusion Matrix:")
 print(train_confusion)
 
@@ -108,10 +97,9 @@ for m in range (0, 200):
         else:
             false_negatives = false_negatives+1     
 
-test_confusion[0][0] = true_negatives
-test_confusion[0][1] = false_negatives
-test_confusion[1][0] = false_positives
-test_confusion[1][1] = true_positives
-test_confusion = test_confusion/num_test
+test_confusion[0][0] = true_negatives/(true_negatives+false_negatives)
+test_confusion[0][1] = false_negatives/(true_negatives+false_negatives)
+test_confusion[1][0] = false_positives/(true_positives+false_positives)
+test_confusion[1][1] = true_positives/(true_positives+false_positives)
 print("Testing Data Confusion Matrix:")
 print(test_confusion)

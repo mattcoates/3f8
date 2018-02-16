@@ -58,10 +58,6 @@ def compute_average_ll(X, y, w):
                       - (1 - y) * np.dot(X, w))
     else:
         return tmp
-
-#def compute_data_ll(X,y,w):
-#    return (y * np.log(logistic(np.dot(X, w))) 
-#           + (1 - y) * np.log(1.0 - logistic(np.dot(X, w))))
     
 ##
 # ll: 1d array with the average likelihood per data point, for each training
@@ -78,6 +74,20 @@ def plot_ll(ll):
     plt.xlabel('Steps')
     plt.ylabel('Average log-likelihood')
     plt.title('Plot Average Log-likelihood Curve')
+    plt.show()
+    
+    
+def plot_2_ll(ll_test, ll_train):
+    plt.figure()
+    ax = plt.gca()
+    plt.xlim(0, np.maximum(len(ll_test), len(ll_train)) + 2)
+    plt.ylim(np.minimum(min(ll_test), min(ll_train)) - 0.1, np.maximum(max(ll_test), max(ll_train)) + 0.1)
+    ax.plot(np.arange(1, len(ll_test) + 1), ll_test, 'r-', label = 'Test Data')
+    ax.plot(np.arange(1, len(ll_train) + 1), ll_train, 'b-', label = 'Training Data')
+    plt.xlabel('Steps')
+    plt.ylabel('Average log-likelihood')
+    plt.title('Average Log-likelihood Curve')
+    plt.legend(loc = 'upper left', scatterpoints = 1, numpoints = 1)
     plt.show()
 
 ##

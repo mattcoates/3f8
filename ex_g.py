@@ -15,7 +15,7 @@ l = float(sys.argv[1])
 
 # Parameters
 if(l==0.01):
-    eta = 0.014          # Learning rate
+    eta = 0.018          # Learning rate
 if (l==1):
     eta = 0.001
 else:
@@ -28,9 +28,15 @@ ll = np.zeros(steps)     # Average LL Evolution
 X_train = np.loadtxt('X_train.txt')
 y_train = np.loadtxt('y_train.txt')
 
+#Load test data
+X_test = np.loadtxt('X_test.txt')
+y_test = np.loadtxt('y_test.txt')
+
 # Expand using RBFs
 X_train_expanded = expand_inputs(l, X_train, X_train)
 X_train_expanded = np.insert(X_train_expanded,800,1,1)
+X_test_expanded = expand_inputs(l, X_test, X_train)
+X_test_expanded = np.insert(X_test_expanded,800,1,1)
 
 # Train Weights
 for i in range (0, steps):
@@ -52,4 +58,5 @@ print("FINAL AVG TRAIN LL =", ll[steps-1])
 plot_ll(ll)
 
 # Plot Classification Regions
-plot_expanded_predictive_distribution(X_train,X_train, y_train,w,l)
+plot_expanded_predictive_distribution(X_train,X_train,y_train,w,l)
+plot_expanded_predictive_distribution(X_test,X_train,y_test,w,l)
