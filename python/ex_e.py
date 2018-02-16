@@ -2,7 +2,7 @@ import sys
 import os
 import numpy as np
 import matplotlib.pyplot as plt
-sys.path.append(os.path.abspath("/home/matt/Documents/3f8"))
+sys.path.append(os.path.abspath("/home/matt/Documents/3f8/python"))
 from inference_functions import *
 
 ## Parameters
