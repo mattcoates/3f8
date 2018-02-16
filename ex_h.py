@@ -61,8 +61,8 @@ plot_expanded_predictive_distribution(X_train,X_train,y_train,w,l)
 plot_expanded_predictive_distribution(X_test,X_train,y_test,w,l)
 
 # Calculate probabilities
-train_predictions = predict_for_plot(X_train, w)
-test_predictions = predict_for_plot(X_test, w)
+train_predictions = predict_for_plot(expand_inputs(l, X_train, X_train), w)
+test_predictions = predict_for_plot(expand_inputs(l, X_test, X_train), w)
 
 #print("Training Predictions:", train_predictions)
 #print("Testing Predictions:", test_predictions)

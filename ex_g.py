@@ -52,4 +52,4 @@ print("FINAL AVG TRAIN LL =", ll[steps-1])
 plot_ll(ll)
 
 # Plot Classification Regions
-plot_expanded_predictive_distribution(X_train,y_train,w,l)
+plot_expanded_predictive_distribution(X_train,X_train, y_train,w,l)
